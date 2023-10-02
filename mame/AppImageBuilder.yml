@@ -10,7 +10,7 @@ AppDir:
     id: org.mamedev.mame
     name: mame
     icon: mame
-    version: "0.259"
+    version: "0.258"
     exec: usr/games/mame
     exec_args: $@
 
