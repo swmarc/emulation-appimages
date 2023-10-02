@@ -1,0 +1,38 @@
+version: 1
+
+script:
+  - rm -r ./AppDir || true
+  - mkdir ./AppDir
+  - wget -c https://github.com/simonowen/simcoupe/releases/download/v1.2.12/simcoupe_1.2.12_linux_amd64.deb
+  - 7z e simcoupe_1.2.12_linux_amd64.deb -so | tar -C "$TARGET_APPDIR/" -x
+  - mkdir -p "$TARGET_APPDIR/usr/local/share/icons"
+  - convert "$TARGET_APPDIR/usr/local/share/simcoupe/SimCoupe.bmp" "$TARGET_APPDIR/usr/local/share/icons/simcoupe.png"
+
+AppDir:
+  path: ./AppDir
+
+  app_info:
+    id: com.simonowen.simcoupe
+    name: simcoupe
+    icon: simcoupe
+    version: "1.2.12"
+    exec: usr/bin/simcoupe
+    exec_args: $@
+
+  apt:
+    arch: amd64
+    sources:
+      - sourceline: 'deb http://archive.ubuntu.com/ubuntu/ lunar main restricted universe multiverse'
+        key_url: 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xF6ECB3762474EDA9D21B7022871920D1991BC93C'
+      - sourceline: 'deb http://archive.ubuntu.com/ubuntu/ lunar-updates main restricted universe multiverse'
+      - sourceline: 'deb https://ppa.launchpadcontent.net/c.falco/mame/ubuntu lunar main'
+        key_url: 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xC255CD2521B9A13C'
+    include:
+      - libsdl2-2.0-0
+
+  runtime:
+    path_mappings:
+      - /usr/local/share/simcoupe/:$APPDIR/usr/local/share/simcoupe/
+
+AppImage:
+  arch: x86_64
