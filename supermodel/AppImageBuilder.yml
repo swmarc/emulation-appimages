@@ -20,7 +20,7 @@ AppDir:
     id: com.supermodel3.supermodel
     name: supermodel
     icon: supermodel
-    version: "0.3a"
+    version: "git"
     exec: usr/bin/supermodel
     exec_args: $@
 
