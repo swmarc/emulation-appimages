@@ -1,0 +1,45 @@
+version: 1
+
+script:
+  - rm -r ./AppDir || true
+  - mkdir ./AppDir
+  - mkdir -p .tmp
+  - mkdir -p $TARGET_APPDIR/usr/bin $TARGET_APPDIR/usr/share/icons
+  - (cd .tmp && wget -c -O- https://github.com/finalburnneo/FBNeo/releases/download/latest/Linux.SDL.2.zip | bsdtar -xvf-)
+  - (cd .tmp && wget -c https://raw.githubusercontent.com/finalburnneo/FBNeo/master/src/burner/resource/splash.bmp)
+  - install -Dm755 .tmp/fbneo "$TARGET_APPDIR/usr/bin/fbneo"
+  - convert .tmp/splash.bmp "$TARGET_APPDIR/usr/share/icons/fbneo.png"
+  - rm -rf .tmp
+
+AppDir:
+  path: ./AppDir
+
+  app_info:
+    id: com.neo-source.fbneo
+    name: fbneo
+    icon: fbneo
+    version: "nightly"
+    exec: usr/bin/fbneo
+    exec_args: $@
+
+  apt:
+    arch: amd64
+    sources:
+      - sourceline: 'deb http://archive.ubuntu.com/ubuntu/ lunar main restricted universe multiverse'
+        key_url: 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xF6ECB3762474EDA9D21B7022871920D1991BC93C'
+      - sourceline: 'deb http://archive.ubuntu.com/ubuntu/ lunar-updates main restricted universe multiverse'
+    include:
+      - libsdl2-2.0-0
+      - libsdl2-image-2.0-0
+      - libwayland-egl1
+
+  test:
+    ubuntu:
+      image: swmarc/appimage-tests:ubuntu-23.04
+      command: ./AppRun --version
+    debian:
+      image: swmarc/appimage-tests:debian-stable
+      command: ./AppRun --version
+
+AppImage:
+  arch: x86_64
