@@ -1,0 +1,40 @@
+version: 1
+
+script:
+  - rm -r ./AppDir || true
+  - mkdir ./AppDir
+  - mkdir .tmp
+  - (cd .tmp && wget -c https://github.com/atari800/atari800/releases/download/ATARI800_5_0_0/atari800_5.0.0_amd64.deb)
+  - (cd .tmp && 7z e atari800_5.0.0_amd64.deb -so | tar -C "$TARGET_APPDIR/" -x)
+  - rm -rf .tmp
+
+AppDir:
+  path: ./AppDir
+
+  app_info:
+    id: io.github.atari800
+    name: atari800
+    icon: atari800
+    version: "5.0.0"
+    exec: usr/bin/atari800
+    exec_args: $@
+
+  apt:
+    arch: amd64
+    sources:
+      - sourceline: 'deb http://archive.ubuntu.com/ubuntu/ lunar main restricted universe multiverse'
+        key_url: 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xF6ECB3762474EDA9D21B7022871920D1991BC93C'
+      - sourceline: 'deb http://archive.ubuntu.com/ubuntu/ lunar-updates main restricted universe multiverse'
+    include:
+      - libasound2
+      - libflac12
+      - libmp3lame0
+      - libmpg123-0
+      - libogg0
+      - libopus0
+      - libsdl1.2-compat
+      - libvorbis0a
+      - libvorbisenc2
+
+AppImage:
+  arch: x86_64
