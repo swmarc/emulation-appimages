@@ -1,0 +1,39 @@
+version: 1
+
+script:
+  - rm -r ./AppDir || true
+  - mkdir ./AppDir
+  - mkdir -p .tmp
+  - (cd .tmp && git -C Supermodel pull || git clone --depth 1 https://github.com/trzy/Supermodel.git)
+  - (cd .tmp/Supermodel &&  make -j 2 -f Makefiles/Makefile.UNIX NET_BOARD=1)
+  - install -Dm755 .tmp/Supermodel/bin/supermodel "$TARGET_APPDIR/usr/bin/supermodel"
+  - install -Dm644 assets/supermodel.png "$TARGET_APPDIR/usr/share/icons/supermodel.png"
+  - install -Dm644 .tmp/Supermodel/Docs/LICENSE.txt "$TARGET_APPDIR/usr/share/licenses/supermodel/LICENSE"
+  - install -Dm644 .tmp/Supermodel/Docs/README.txt "$TARGET_APPDIR/usr/share/doc/supermodel/README"
+  - install -d "$TARGET_APPDIR/usr/share/supermodel/Config"
+  - install -m644 .tmp/Supermodel/Config/* "$TARGET_APPDIR/usr/share/supermodel/Config/"
+
+AppDir:
+  path: ./AppDir
+
+  app_info:
+    id: com.supermodel3.supermodel
+    name: supermodel
+    icon: supermodel
+    version: "0.3a"
+    exec: usr/bin/supermodel
+    exec_args: $@
+
+  apt:
+    arch: amd64
+    sources:
+      - sourceline: 'deb http://archive.ubuntu.com/ubuntu/ lunar main restricted universe multiverse'
+        key_url: 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xF6ECB3762474EDA9D21B7022871920D1991BC93C'
+      - sourceline: 'deb http://archive.ubuntu.com/ubuntu/ lunar-updates main restricted universe multiverse'
+      - sourceline: 'deb https://ppa.launchpadcontent.net/c.falco/mame/ubuntu lunar main'
+        key_url: 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xC255CD2521B9A13C'
+    include:
+      - libsdl2-2.0-0
+
+AppImage:
+  arch: x86_64
