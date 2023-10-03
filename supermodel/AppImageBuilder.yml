@@ -31,8 +31,6 @@ AppDir:
       - sourceline: 'deb http://archive.ubuntu.com/ubuntu/ lunar main restricted universe multiverse'
         key_url: 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xF6ECB3762474EDA9D21B7022871920D1991BC93C'
       - sourceline: 'deb http://archive.ubuntu.com/ubuntu/ lunar-updates main restricted universe multiverse'
-      - sourceline: 'deb https://ppa.launchpadcontent.net/c.falco/mame/ubuntu lunar main'
-        key_url: 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xC255CD2521B9A13C'
     include:
       - libsdl2-2.0-0
 
