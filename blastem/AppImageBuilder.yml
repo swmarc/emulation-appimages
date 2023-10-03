@@ -1,0 +1,29 @@
+version: 1
+
+script:
+  - rm -r ./AppDir || true
+  - mkdir ./AppDir
+  - mkdir -p $TARGET_APPDIR/opt/blastem
+  - wget -O- https://www.retrodev.com/blastem/blastem64-0.6.2.tar.gz | tar -C $TARGET_APPDIR/opt/blastem --strip 1 -xzf -
+  - wget -O $TARGET_APPDIR/opt/blastem/images/blastem.png https://dl.flathub.org/repo/appstream/x86_64/icons/128x128/com.retrodev.blastem.png
+
+AppDir:
+  path: ./AppDir
+
+  app_info:
+    id: com.retrodev.blastem
+    name: blastem
+    version: "0.6.4"
+    exec: opt/blastem/blastem
+    exec_args: $@
+
+  test:
+    ubuntu:
+      image: swmarc/appimage-tests:ubuntu-23.04
+      command: ./AppRun -v
+    debian:
+      image: swmarc/appimage-tests:debian-stable
+      command: ./AppRun -v
+
+AppImage:
+  arch: x86_64
