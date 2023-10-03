@@ -37,7 +37,7 @@ AppDir:
       - libvorbis0a
       - libvorbisenc2
 
-  # Exists with code 3 even on simple version information.
+  # Exits with code 3 even on simple version information.
   # test:
   #   ubuntu:
   #     image: swmarc/appimage-tests:ubuntu-23.04

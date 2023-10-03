@@ -1,0 +1,52 @@
+version: 1
+
+script:
+  - rm -r ./AppDir || true
+  - mkdir ./AppDir
+  - mkdir .tmp
+  - (cd .tmp && wget -c https://ftp.debian.org/debian/pool/main/d/dosbox-x/dosbox-x_2023.09.01+dfsg-2_amd64.deb)
+  - (cd .tmp && 7z e dosbox-x_2023.09.01+dfsg-2_amd64.deb -so | tar -C "$TARGET_APPDIR/" -x)
+  - rm -rf .tmp
+
+AppDir:
+  path: ./AppDir
+
+  app_info:
+    id: com.dosbox-x
+    name: dosbox-x
+    icon: dosbox-x
+    version: "20230901"
+    exec: usr/bin/dosbox-x
+    exec_args: $@
+
+  apt:
+    arch: amd64
+    sources:
+      - sourceline: 'deb http://archive.ubuntu.com/ubuntu/ lunar main restricted universe multiverse'
+        key_url: 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xF6ECB3762474EDA9D21B7022871920D1991BC93C'
+      - sourceline: 'deb http://archive.ubuntu.com/ubuntu/ lunar-updates main restricted universe multiverse'
+      - sourceline: 'deb https://ppa.launchpadcontent.net/c.falco/mame/ubuntu lunar main'
+        key_url: 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xC255CD2521B9A13C'
+    include:
+      - libfluidsynth3
+      - libminizip1
+      - libopusfile0
+      - libpcap0.8
+      - libphysfs1
+      - libsdl2-2.0-0
+      - libsdl2-net-2.0-0
+      - libslirp0
+      - libspeexdsp1
+      - libwayland-egl1
+
+  # Exits with code 1 even on simple version information.
+  # test:
+    # ubuntu:
+    #   image: swmarc/appimage-tests:ubuntu-23.04
+    #   command: ./AppRun -version
+    # debian:
+    #   image: swmarc/appimage-tests:debian-stable
+    #   command: ./AppRun -version
+
+AppImage:
+  arch: x86_64
