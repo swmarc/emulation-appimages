@@ -33,6 +33,12 @@ AppDir:
       - sourceline: 'deb http://archive.ubuntu.com/ubuntu/ lunar-updates main restricted universe multiverse'
     include:
       - libsdl2-2.0-0
+      - libsdl2-net-2.0-0
+
+  test:
+    ubuntu:
+      image: swmarc/appimage-tests:ubuntu-23.04
+      command: ./AppRun -h
 
 AppImage:
   arch: x86_64

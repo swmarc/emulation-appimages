@@ -33,8 +33,14 @@ AppDir:
       - libogg0
       - libopus0
       - libsdl1.2-compat
+      - libsdl2-2.0-0
       - libvorbis0a
       - libvorbisenc2
+
+  test:
+    ubuntu:
+      image: swmarc/appimage-tests:ubuntu-23.04
+      command: ./AppRun --help
 
 AppImage:
   arch: x86_64

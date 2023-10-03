@@ -25,5 +25,10 @@ AppDir:
     include:
       - mame
 
+  test:
+    ubuntu:
+      image: swmarc/appimage-tests:ubuntu-23.04
+      command: ./AppRun -showusage
+
 AppImage:
   arch: x86_64

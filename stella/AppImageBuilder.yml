@@ -30,5 +30,10 @@ AppDir:
     include:
       - libsdl2-2.0-0
 
+  test:
+    ubuntu:
+      image: swmarc/appimage-tests:ubuntu-23.04
+      command: ./AppRun -help
+
 AppImage:
   arch: x86_64
