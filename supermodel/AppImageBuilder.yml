@@ -12,6 +12,7 @@ script:
   - install -Dm644 .tmp/Supermodel/Docs/README.txt "$TARGET_APPDIR/usr/share/doc/supermodel/README"
   - install -d "$TARGET_APPDIR/usr/share/supermodel/Config"
   - install -m644 .tmp/Supermodel/Config/* "$TARGET_APPDIR/usr/share/supermodel/Config/"
+  - rm -rf .tmp
 
 AppDir:
   path: ./AppDir
