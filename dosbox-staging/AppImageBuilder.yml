@@ -1,0 +1,41 @@
+version: 1
+
+script:
+  - rm -r ./AppDir || true
+  - mkdir ./AppDir
+  - mkdir -p $TARGET_APPDIR/opt/dosbox-staging
+  - wget -O- https://github.com/dosbox-staging/dosbox-staging/releases/download/v0.80.1/dosbox-staging-linux-v0.80.1.tar.xz | tar -C $TARGET_APPDIR/opt/dosbox-staging --strip 1 -xJf -
+
+AppDir:
+  path: ./AppDir
+
+  app_info:
+    id: io.github.dosbox-staging
+    name: dosbox-staging
+    version: "0.80.1"
+    exec: opt/dosbox-staging/dosbox
+    exec_args: $@
+
+  apt:
+    arch: amd64
+    sources:
+      - sourceline: 'deb http://archive.ubuntu.com/ubuntu/ lunar main restricted universe multiverse'
+        key_url: 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xF6ECB3762474EDA9D21B7022871920D1991BC93C'
+      - sourceline: 'deb http://archive.ubuntu.com/ubuntu/ lunar-updates main restricted universe multiverse'
+    include:
+      - libsdl2-2.0-0
+      - libsdl2-image-2.0-0
+      - libsdl2-net-2.0-0
+      - libopusfile0
+      - libwayland-egl1
+
+  test:
+    ubuntu:
+      image: swmarc/appimage-tests:ubuntu-23.04
+      command: ./AppRun -v
+    debian:
+      image: swmarc/appimage-tests:debian-stable
+      command: ./AppRun -v
+
+AppImage:
+  arch: x86_64
