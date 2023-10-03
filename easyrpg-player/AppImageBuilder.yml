@@ -1,0 +1,43 @@
+version: 1
+
+script:
+  - rm -r ./AppDir || true
+  - mkdir ./AppDir
+  - mkdir -p .tmp
+  - mkdir -p $TARGET_APPDIR/usr/bin $TARGET_APPDIR/usr/share/icons
+  - (cd .tmp && wget -c https://easyrpg.org/downloads/player/0.8/easyrpg-player-0.8-linux.tar.gz && tar -xvf easyrpg-player-0.8-linux.tar.gz)
+  - (cd .tmp && wget -c https://easyrpg.org/downloads/logos/logo1.svg)
+  - install -Dm755 .tmp/easyrpg-player "$TARGET_APPDIR/usr/bin/easyrpg-player"
+  - install -Dm644 .tmp/logo1.svg "$TARGET_APPDIR/usr/share/icons/easyrpg-player.png"
+  - rm -rf .tmp
+
+AppDir:
+  path: ./AppDir
+
+  app_info:
+    id: org.easyrpg.easyrpg-player
+    name: easyrpg-player
+    icon: easyrpg-player
+    version: "0.8"
+    exec: usr/bin/easyrpg-player
+    exec_args: $@
+
+  apt:
+    arch: amd64
+    sources:
+      - sourceline: 'deb http://archive.ubuntu.com/ubuntu/ lunar main restricted universe multiverse'
+        key_url: 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xF6ECB3762474EDA9D21B7022871920D1991BC93C'
+      - sourceline: 'deb http://archive.ubuntu.com/ubuntu/ lunar-updates main restricted universe multiverse'
+    include:
+      - libasound2
+
+  test:
+    ubuntu:
+      image: swmarc/appimage-tests:ubuntu-23.04
+      command: ./AppRun --version
+    debian:
+      image: swmarc/appimage-tests:debian-stable
+      command: ./AppRun --version
+
+AppImage:
+  arch: x86_64
