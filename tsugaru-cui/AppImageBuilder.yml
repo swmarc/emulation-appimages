@@ -1,0 +1,36 @@
+version: 1
+
+script:
+  - rm -r ./AppDir || true
+  - mkdir ./AppDir
+  - mkdir -p .tmp
+  - (cd .tmp && wget -c https://github.com/captainys/TOWNSEMU/releases/download/v20230913/ubuntu_binary_latest.zip)
+  - (cd .tmp && 7z e -aoa ubuntu_binary_latest.zip)
+  - install -Dm755 .tmp/Tsugaru_CUI "$TARGET_APPDIR/usr/bin/Tsugaru_CUI"
+  - install -Dm644 assets/tsugaru-cui.png "$TARGET_APPDIR/usr/share/icons/tsugaru-cui.png"
+  - rm -rf .tmp
+
+AppDir:
+  path: ./AppDir
+
+  app_info:
+    id: com.github.captainys.townsemu-cui
+    name: tsugaru-cui
+    icon: tsugaru-cui
+    version: "v20230913"
+    exec: usr/bin/Tsugaru_CUI
+    exec_args: $@
+
+  apt:
+    arch: amd64
+    sources:
+      - sourceline: 'deb http://archive.ubuntu.com/ubuntu/ lunar main restricted universe multiverse'
+        key_url: 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xF6ECB3762474EDA9D21B7022871920D1991BC93C'
+      - sourceline: 'deb http://archive.ubuntu.com/ubuntu/ lunar-updates main restricted universe multiverse'
+      - sourceline: 'deb https://ppa.launchpadcontent.net/c.falco/mame/ubuntu lunar main'
+        key_url: 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xC255CD2521B9A13C'
+    include:
+      - libasound2
+
+AppImage:
+  arch: x86_64
