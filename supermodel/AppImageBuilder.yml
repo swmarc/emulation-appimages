@@ -34,10 +34,14 @@ AppDir:
     include:
       - libsdl2-2.0-0
       - libsdl2-net-2.0-0
+      - libwayland-egl1
 
   test:
     ubuntu:
       image: swmarc/appimage-tests:ubuntu-23.04
+      command: ./AppRun -h
+    debian:
+      image: swmarc/appimage-tests:debian-stable
       command: ./AppRun -h
 
 AppImage:

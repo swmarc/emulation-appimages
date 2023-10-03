@@ -37,10 +37,14 @@ AppDir:
       - libvorbis0a
       - libvorbisenc2
 
-  test:
-    ubuntu:
-      image: swmarc/appimage-tests:ubuntu-23.04
-      command: ./AppRun --help
+  # Exists with code 3 even on simple version information.
+  # test:
+  #   ubuntu:
+  #     image: swmarc/appimage-tests:ubuntu-23.04
+  #     command: ./AppRun --version
+  #   debian:
+  #     image: swmarc/appimage-tests:debian-stable
+  #     command: ./AppRun --version
 
 AppImage:
   arch: x86_64

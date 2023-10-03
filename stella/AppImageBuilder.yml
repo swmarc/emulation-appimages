@@ -29,10 +29,14 @@ AppDir:
         key_url: 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xC255CD2521B9A13C'
     include:
       - libsdl2-2.0-0
+      - libwayland-egl1
 
   test:
     ubuntu:
       image: swmarc/appimage-tests:ubuntu-23.04
+      command: ./AppRun -help
+    debian:
+      image: swmarc/appimage-tests:debian-stable
       command: ./AppRun -help
 
 AppImage:

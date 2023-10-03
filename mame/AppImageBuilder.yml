@@ -24,10 +24,14 @@ AppDir:
         key_url: 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xC255CD2521B9A13C'
     include:
       - mame
+      - libwayland-egl1
 
   test:
     ubuntu:
       image: swmarc/appimage-tests:ubuntu-23.04
+      command: ./AppRun -showusage
+    debian:
+      image: swmarc/appimage-tests:debian-stable
       command: ./AppRun -showusage
 
 AppImage:
