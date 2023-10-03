@@ -3,10 +3,12 @@ version: 1
 script:
   - rm -r ./AppDir || true
   - mkdir ./AppDir
-  - wget -c https://github.com/simonowen/simcoupe/releases/download/v1.2.12/simcoupe_1.2.12_linux_amd64.deb
-  - 7z e simcoupe_1.2.12_linux_amd64.deb -so | tar -C "$TARGET_APPDIR/" -x
+  - mkdir .tmp
+  - (cd .tmp && wget -c https://github.com/simonowen/simcoupe/releases/download/v1.2.12/simcoupe_1.2.12_linux_amd64.deb)
+  - (cd .tmp && 7z e simcoupe_1.2.12_linux_amd64.deb -so | tar -C "$TARGET_APPDIR/" -x)
   - mkdir -p "$TARGET_APPDIR/usr/local/share/icons"
   - convert "$TARGET_APPDIR/usr/local/share/simcoupe/SimCoupe.bmp" "$TARGET_APPDIR/usr/local/share/icons/simcoupe.png"
+  - rm -rf .tmp
 
 AppDir:
   path: ./AppDir

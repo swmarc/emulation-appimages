@@ -3,8 +3,10 @@ version: 1
 script:
   - rm -r ./AppDir || true
   - mkdir ./AppDir
-  - wget -c https://github.com/stella-emu/stella/releases/download/6.7/stella_6.7_amd64.deb
-  - 7z e stella_6.7_amd64.deb -so | tar -C "$TARGET_APPDIR/" -x
+  - mkdir .tmp
+  - (cd .tmp && wget -c https://github.com/stella-emu/stella/releases/download/6.7/stella_6.7_amd64.deb)
+  - (cd .tmp && 7z e stella_6.7_amd64.deb -so | tar -C "$TARGET_APPDIR/" -x)
+  - rm -rf .tmp
 
 AppDir:
   path: ./AppDir
