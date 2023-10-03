@@ -1,0 +1,38 @@
+version: 1
+
+script:
+  - rm -r ./AppDir || true
+  - mkdir ./AppDir
+  - mkdir -p $TARGET_APPDIR/opt/cpcemu
+  - wget -O- https://cpc-emu.org/Release/2022-08-13/cpcemu-linux-x86_64-2.5.tar.gz | tar -C $TARGET_APPDIR/opt/cpcemu --strip 1 -xzf -
+
+AppDir:
+  path: ./AppDir
+
+  app_info:
+    id: org.cpc-emu.cpcemu
+    name: cpcemu
+    version: "2.5"
+    exec: opt/cpcemu/cpcemu
+    exec_args: $@
+
+  apt:
+    arch: amd64
+    sources:
+      - sourceline: 'deb http://archive.ubuntu.com/ubuntu/ lunar main restricted universe multiverse'
+        key_url: 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xF6ECB3762474EDA9D21B7022871920D1991BC93C'
+      - sourceline: 'deb http://archive.ubuntu.com/ubuntu/ lunar-updates main restricted universe multiverse'
+    include:
+      - libsdl2-2.0-0
+      - libwayland-egl1
+
+  test:
+    ubuntu:
+      image: swmarc/appimage-tests:ubuntu-23.04
+      command: ./AppRun -v
+    debian:
+      image: swmarc/appimage-tests:debian-stable
+      command: ./AppRun -v
+
+AppImage:
+  arch: x86_64
