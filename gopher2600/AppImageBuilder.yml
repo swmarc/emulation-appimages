@@ -1,0 +1,42 @@
+version: 1
+
+script:
+  - rm -r ./AppDir || true
+  - mkdir ./AppDir
+  - mkdir -p .tmp $TARGET_APPDIR/usr/bin
+  - (cd .tmp && wget -c https://github.com/JetSetIlly/Gopher2600/releases/download/v0.25.0/gopher2600_linux_amd64)
+  - install -Dm755 .tmp/gopher2600_linux_amd64 "$TARGET_APPDIR/usr/bin/gopher2600"
+  - rm -rf .tmp
+
+AppDir:
+  path: ./AppDir
+
+  app_info:
+    id: com.github.jetsetilly.gopher2600
+    name: gopher2600
+    version: "0.25.0"
+    exec: usr/bin/gopher2600
+    exec_args: $@
+
+  apt:
+    arch: amd64
+    sources:
+      - sourceline: 'deb http://archive.ubuntu.com/ubuntu/ lunar main restricted universe multiverse'
+        key_url: 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xF6ECB3762474EDA9D21B7022871920D1991BC93C'
+      - sourceline: 'deb http://archive.ubuntu.com/ubuntu/ lunar-updates main restricted universe multiverse'
+      - sourceline: 'deb https://ppa.launchpadcontent.net/c.falco/mame/ubuntu lunar main'
+        key_url: 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xC255CD2521B9A13C'
+    include:
+      - libsdl2-2.0-0
+      - libwayland-egl1
+
+  test:
+    ubuntu:
+      image: swmarc/appimage-tests:ubuntu-23.04
+      command: ./AppRun -help
+    debian:
+      image: swmarc/appimage-tests:debian-stable
+      command: ./AppRun -help
+
+AppImage:
+  arch: x86_64
