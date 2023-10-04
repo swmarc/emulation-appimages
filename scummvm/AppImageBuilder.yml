@@ -1,0 +1,53 @@
+version: 1
+
+script:
+  - rm -r ./AppDir || true
+  - mkdir ./AppDir
+  - mkdir .tmp
+  - (cd .tmp && wget -c https://downloads.scummvm.org/frs/scummvm/2.7.1/scummvm_2.7.1-1_ubuntu23.04_amd64.deb)
+  - (cd .tmp && 7z e scummvm_2.7.1-1_ubuntu23.04_amd64.deb -so | tar -C "$TARGET_APPDIR/" -x)
+  - rm -rf .tmp
+
+AppDir:
+  path: ./AppDir
+
+  app_info:
+    id: org.scummvm.scummvm
+    name: scummvm
+    icon: scummvm
+    version: "2.7.1"
+    exec: usr/games/scummvm
+    exec_args: $@
+
+  apt:
+    arch: amd64
+    sources:
+      - sourceline: 'deb http://archive.ubuntu.com/ubuntu/ lunar main restricted universe multiverse'
+        key_url: 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xF6ECB3762474EDA9D21B7022871920D1991BC93C'
+      - sourceline: 'deb http://archive.ubuntu.com/ubuntu/ lunar-updates main restricted universe multiverse'
+    include:
+      - liba52-0.7.4
+      - libcurl3-gnutls
+      - libfaad2
+      - libfluidsynth3
+      - libgif7
+      - libjpeg8
+      - libmad0
+      - libmpeg2-4
+      - libsdl2-net-2.0-0
+      - libsndio7.0
+      - libspeechd2
+      - libtheora-bin
+      - libvorbisfile3
+      - libwayland-egl1
+
+  test:
+    ubuntu:
+      image: swmarc/appimage-tests:ubuntu-23.04
+      command: ./AppRun --version
+    debian:
+      image: swmarc/appimage-tests:debian-stable
+      command: ./AppRun --version
+
+AppImage:
+  arch: x86_64
