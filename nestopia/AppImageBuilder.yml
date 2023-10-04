@@ -1,0 +1,36 @@
+version: 1
+
+script:
+  - rm -r ./AppDir || true
+
+AppDir:
+  path: ./AppDir
+
+  app_info:
+    id: ca.0ldsk00l.nestopia
+    name: nestopia
+    icon: nestopia
+    version: "1.52.0"
+    exec: usr/games/nestopia
+    exec_args: $@
+
+  apt:
+    arch: amd64
+    sources:
+      - sourceline: 'deb http://archive.ubuntu.com/ubuntu/ lunar main restricted universe multiverse'
+        key_url: 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xF6ECB3762474EDA9D21B7022871920D1991BC93C'
+      - sourceline: 'deb http://archive.ubuntu.com/ubuntu/ lunar-updates main restricted universe multiverse'
+    include:
+      - nestopia
+      - libwayland-egl1
+
+  test:
+    ubuntu:
+      image: swmarc/appimage-tests:ubuntu-23.04
+      command: ./AppRun --version
+    debian:
+      image: swmarc/appimage-tests:debian-stable
+      command: ./AppRun --version
+
+AppImage:
+  arch: x86_64
