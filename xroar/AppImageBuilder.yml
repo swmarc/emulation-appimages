@@ -1,0 +1,36 @@
+version: 1
+
+script:
+  - rm -r ./AppDir || true
+
+AppDir:
+  path: ./AppDir
+
+  app_info:
+    id: uk.org.6809.xroar
+    name: xroar
+    version: "1.4.2"
+    exec: usr/bin/xroar
+    exec_args: $@
+
+  apt:
+    arch: amd64
+    sources:
+      - sourceline: 'deb http://archive.ubuntu.com/ubuntu/ lunar main restricted universe multiverse'
+        key_url: 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xF6ECB3762474EDA9D21B7022871920D1991BC93C'
+      - sourceline: 'deb http://archive.ubuntu.com/ubuntu/ lunar-updates main restricted universe multiverse'
+      - sourceline: 'deb https://ppa.launchpadcontent.net/sixxie/ppa/ubuntu jammy main'
+        key_url: 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xBF6287A1E23B0DEFD1960EF8101F7F86D88C7232'
+    include:
+      - xroar
+
+  test:
+    ubuntu:
+      image: swmarc/appimage-tests:ubuntu-23.04
+      command: ./AppRun --version
+    debian:
+      image: swmarc/appimage-tests:debian-stable
+      command: ./AppRun --version
+
+AppImage:
+  arch: x86_64
