@@ -1,0 +1,29 @@
+version: 1
+
+script:
+  - rm -r ./AppDir || true
+  - mkdir ./AppDir
+  - mkdir -p $TARGET_APPDIR/opt/pico8
+  - (cd $TARGET_APPDIR/opt/pico8 && wget -c -O- https://www.lexaloffle.com/dl/7tiann/pico-8_0.2.5g_amd64.zip | bsdtar --strip-components 1 -xvf-)
+  - chmod 755 $TARGET_APPDIR/opt/pico8/pico8
+
+AppDir:
+  path: ./AppDir
+
+  app_info:
+    id: com.lexaloffle.pico8
+    name: pico8
+    version: "0.2.5g"
+    exec: opt/pico8/pico8
+    exec_args: $@
+
+  test:
+    ubuntu:
+      image: swmarc/appimage-tests:ubuntu-23.04
+      command: ./AppRun
+    debian:
+      image: swmarc/appimage-tests:debian-stable
+      command: ./AppRun
+
+AppImage:
+  arch: x86_64
