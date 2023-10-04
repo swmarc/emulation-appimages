@@ -1,0 +1,40 @@
+version: 1
+
+script:
+  - rm -r ./AppDir || true
+  - mkdir ./AppDir
+  - mkdir -p .tmp $TARGET_APPDIR/opt/openmsx
+  - (cd .tmp && wget -c https://github.com/openMSX/openMSX/releases/download/RELEASE_19_1/openmsx-19.1-linux-x86_64-bin.zip)
+  - (cd .tmp && 7z x -o$TARGET_APPDIR/opt/openmsx/ openmsx-19.1-linux-x86_64-bin.zip)
+  - chmod 755 $TARGET_APPDIR/opt/openmsx/bin/openmsx
+  - rm -rf .tmp
+
+AppDir:
+  path: ./AppDir
+
+  app_info:
+    id: org.openmsx.openmsx
+    name: openmsx
+    version: "19.1"
+    exec: opt/openmsx/bin/openmsx
+    exec_args: $@
+
+  apt:
+    arch: amd64
+    sources:
+      - sourceline: 'deb http://archive.ubuntu.com/ubuntu/ lunar main restricted universe multiverse'
+        key_url: 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xF6ECB3762474EDA9D21B7022871920D1991BC93C'
+      - sourceline: 'deb http://archive.ubuntu.com/ubuntu/ lunar-updates main restricted universe multiverse'
+    include:
+      - libasound2
+
+  test:
+    ubuntu:
+      image: swmarc/appimage-tests:ubuntu-23.04
+      command: ./AppRun --version
+    debian:
+      image: swmarc/appimage-tests:debian-stable
+      command: ./AppRun --version
+
+AppImage:
+  arch: x86_64
