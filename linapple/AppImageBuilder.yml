@@ -1,0 +1,45 @@
+version: 1
+
+script:
+  - rm -r ./AppDir || true
+  - mkdir ./AppDir
+  - mkdir -p .tmp $TARGET_APPDIR/usr/share/icons/
+  - (cd .tmp && git -C linapple pull || git clone --depth 1 https://github.com/linappleii/linapple.git)
+  - (cd .tmp/linapple &&  make -j 2)
+  - (cd .tmp/linapple &&  make install PREFIX= DESTDIR=$TARGET_APPDIR BINDIR=usr/bin DATADIR=usr/share/linapple)
+  - (cd .tmp/linapple && convert res/icon.bmp $TARGET_APPDIR/usr/share/icons/linapple.png)
+  - rm -rf .tmp
+
+AppDir:
+  path: ./AppDir
+
+  app_info:
+    id: com.github.linappleii.linapple
+    name: linapple
+    icon: linapple
+    version: "git"
+    exec: usr/bin/linapple
+    exec_args: $@
+
+  apt:
+    arch: amd64
+    sources:
+      - sourceline: 'deb http://archive.ubuntu.com/ubuntu/ lunar main restricted universe multiverse'
+        key_url: 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xF6ECB3762474EDA9D21B7022871920D1991BC93C'
+      - sourceline: 'deb http://archive.ubuntu.com/ubuntu/ lunar-updates main restricted universe multiverse'
+    include:
+      - libcurl4
+      - libsdl1.2debian
+      - libsdl-image1.2
+      - libzip4
+
+  test:
+    ubuntu:
+      image: swmarc/appimage-tests:ubuntu-23.04
+      command: ./AppRun --help
+    debian:
+      image: swmarc/appimage-tests:debian-stable
+      command: ./AppRun --help
+
+AppImage:
+  arch: x86_64
