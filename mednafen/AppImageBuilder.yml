@@ -1,0 +1,36 @@
+version: 1
+
+script:
+  - rm -r ./AppDir || true
+
+AppDir:
+  path: ./AppDir
+
+  app_info:
+    id: io.github.mednafen
+    name: mednafen
+    version: "1.29.0"
+    exec: usr/games/mednafen
+    exec_args: $@
+
+  apt:
+    arch: amd64
+    sources:
+      - sourceline: 'deb http://archive.ubuntu.com/ubuntu/ lunar main restricted universe multiverse'
+        key_url: 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xF6ECB3762474EDA9D21B7022871920D1991BC93C'
+      - sourceline: 'deb http://archive.ubuntu.com/ubuntu/ lunar-updates main restricted universe multiverse'
+    include:
+      - mednafen
+      - libwayland-egl1
+
+  # Exits with code 255 even on simple help information.
+  # test:
+  #   ubuntu:
+  #     image: swmarc/appimage-tests:ubuntu-23.04
+  #     command: ./AppRun -help
+  #   debian:
+  #     image: swmarc/appimage-tests:debian-stable
+  #     command: ./AppRun -help
+
+AppImage:
+  arch: x86_64
