@@ -1,0 +1,28 @@
+version: 1
+
+script:
+  - rm -r ./AppDir || true
+  - mkdir ./AppDir
+  - mkdir -p $TARGET_APPDIR/opt/fs-uae
+  - wget -O- https://github.com/FrodeSolheim/fs-uae/releases/download/v3.1.66/FS-UAE_3.1.66_Linux_x86-64.tar.xz | tar -C $TARGET_APPDIR/opt/fs-uae --strip 1 -xJf -
+
+AppDir:
+  path: ./AppDir
+
+  app_info:
+    id: net.fs-uae
+    name: fs-uae
+    version: "3.1.66"
+    exec: opt/fs-uae/Linux/x86-64/fs-uae
+    exec_args: $@
+
+  test:
+    ubuntu:
+      image: swmarc/appimage-tests:ubuntu-23.04
+      command: ./AppRun --version
+    debian:
+      image: swmarc/appimage-tests:debian-stable
+      command: ./AppRun --version
+
+AppImage:
+  arch: x86_64
