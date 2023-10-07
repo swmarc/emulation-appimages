@@ -1,0 +1,42 @@
+version: 1
+
+script:
+  - rm -r ./AppDir || true
+  - mkdir ./AppDir
+  - mkdir -p .tmp
+  - (cd .tmp && wget -c -O- https://github.com/google/mount-zip/archive/refs/tags/v1.0.7.tar.gz | bsdtar --strip-components 1 -xvf-)
+  - (cd .tmp &&  make)
+  - (cd .tmp &&  make install DESTDIR=$TARGET_APPDIR)
+  - rm -rf .tmp
+
+AppDir:
+  path: ./AppDir
+
+  app_info:
+    id: com.github.google.mount-zip
+    name: mount-zip
+    version: "1.0.7"
+    exec: usr/bin/mount-zip
+    exec_args: $@
+
+  apt:
+    arch: amd64
+    sources:
+      - sourceline: 'deb http://archive.ubuntu.com/ubuntu/ lunar main restricted universe multiverse'
+        key_url: 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xF6ECB3762474EDA9D21B7022871920D1991BC93C'
+      - sourceline: 'deb http://archive.ubuntu.com/ubuntu/ lunar-updates main restricted universe multiverse'
+    include:
+      - libfuse2
+      - libzip4
+
+  # Exits with code 1 even on simple version information.
+  test:
+    ubuntu:
+      image: swmarc/appimage-tests:ubuntu-23.04
+      command: ./AppRun --version
+    debian:
+      image: swmarc/appimage-tests:debian-stable
+      command: ./AppRun --version
+
+AppImage:
+  arch: x86_64
