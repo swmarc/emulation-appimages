@@ -4,7 +4,7 @@ script:
   - rm -r ./AppDir || true
   - mkdir ./AppDir
   - mkdir -p .tmp $TARGET_APPDIR/usr/bin
-  - (cd .tmp && wget -c https://github.com/JetSetIlly/Gopher2600/releases/download/v0.25.0/gopher2600_linux_amd64)
+  - (cd .tmp && wget -c https://github.com/JetSetIlly/Gopher2600/releases/download/v0.26.0/gopher2600_linux_amd64)
   - install -Dm755 .tmp/gopher2600_linux_amd64 "$TARGET_APPDIR/usr/bin/gopher2600"
   - rm -rf .tmp
 
@@ -14,7 +14,7 @@ AppDir:
   app_info:
     id: com.github.jetsetilly.gopher2600
     name: gopher2600
-    version: "0.25.0"
+    version: "0.26.0"
     exec: usr/bin/gopher2600
     exec_args: $@
 
