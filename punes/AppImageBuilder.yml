@@ -4,19 +4,20 @@ script:
   - rm -r ./AppDir || true
   - mkdir ./AppDir
   - mkdir -p .tmp
-  - (cd .tmp && wget -c -O- https://github.com/google/fuse-archive/archive/refs/tags/v0.1.14.tar.gz | bsdtar --strip-components 1 -xvf-)
-  - (cd .tmp &&  make -j 4)
-  - (cd .tmp &&  make install DESTDIR=$TARGET_APPDIR)
+  - (cd .tmp && git -C puNES pull || git clone --depth 1 https://github.com/punesemu/puNES.git)
+  - (cd .tmp/puNES && cmake -B build -G Ninja -DENABLE_FFMPEG:BOOL=ON)
+  - (cd .tmp/puNES && cmake --build build -j 4)
+  - install -Dm755 .tmp/puNES/build/src/punes "$TARGET_APPDIR/usr/bin/punes"
   - rm -rf .tmp
 
 AppDir:
   path: ./AppDir
 
   app_info:
-    id: com.github.google.fuse-archive
-    name: fuse-archive
-    version: "0.1.14"
-    exec: usr/bin/fuse-archive
+    id: com.github.punesemu.punes
+    name: punes
+    version: "git"
+    exec: usr/bin/punes
     exec_args: $@
 
   apt:
@@ -26,10 +27,12 @@ AppDir:
         key_url: 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xF6ECB3762474EDA9D21B7022871920D1991BC93C'
       - sourceline: 'deb http://archive.ubuntu.com/ubuntu/ lunar-updates main restricted universe multiverse'
     include:
-      - libarchive13
-      - libfuse2
+      - libavformat59
+      - libqt5networkauth5
+      - libqt5svg5
+      - libswscale6
 
-  # Exits with code 1 even on simple version information.
+  # Exits with code 134 due to missing X.
   # test:
   #   ubuntu:
   #     image: swmarc/appimage-tests:ubuntu-23.04

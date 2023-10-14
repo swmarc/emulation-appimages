@@ -5,7 +5,7 @@ script:
   - mkdir ./AppDir
   - mkdir -p .tmp
   - (cd .tmp && git -C Supermodel pull || git clone --depth 1 https://github.com/trzy/Supermodel.git)
-  - (cd .tmp/Supermodel &&  make -j 2 -f Makefiles/Makefile.UNIX NET_BOARD=1)
+  - (cd .tmp/Supermodel &&  make -j 4 -f Makefiles/Makefile.UNIX NET_BOARD=1)
   - install -Dm755 .tmp/Supermodel/bin/supermodel "$TARGET_APPDIR/usr/bin/supermodel"
   - install -Dm644 assets/supermodel.png "$TARGET_APPDIR/usr/share/icons/supermodel.png"
   - install -Dm644 .tmp/Supermodel/Docs/LICENSE.txt "$TARGET_APPDIR/usr/share/licenses/supermodel/LICENSE"

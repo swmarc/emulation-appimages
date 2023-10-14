@@ -5,8 +5,8 @@ script:
   - mkdir ./AppDir
   - mkdir -p .tmp
   - (cd .tmp && wget -c -O- https://github.com/google/mount-zip/archive/refs/tags/v1.0.7.tar.gz | bsdtar --strip-components 1 -xvf-)
-  - (cd .tmp &&  make)
-  - (cd .tmp &&  make install DESTDIR=$TARGET_APPDIR)
+  - (cd .tmp && make)
+  - (cd .tmp && make install DESTDIR=$TARGET_APPDIR)
   - rm -rf .tmp
 
 AppDir:
@@ -29,7 +29,6 @@ AppDir:
       - libfuse2
       - libzip4
 
-  # Exits with code 1 even on simple version information.
   test:
     ubuntu:
       image: swmarc/appimage-tests:ubuntu-23.04
