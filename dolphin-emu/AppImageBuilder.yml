@@ -1,0 +1,58 @@
+version: 1
+
+script:
+  - rm -r ./AppDir || true
+  - mkdir ./AppDir
+  - mkdir -p .tmp
+  - (cd .tmp && git -C dolphin pull || git clone --depth 1 https://github.com/dolphin-emu/dolphin.git)
+  - (cd .tmp/dolphin && git submodule update --init --recursive Externals/mGBA Externals/spirv_cross Externals/zlib-ng Externals/libspng Externals/VulkanMemoryAllocator Externals/cubeb Externals/implot Externals/gtest Externals/rcheevos Externals/fmt Externals/lz4 Externals/libusb Externals/curl)
+  - (cd .tmp/dolphin && git pull --recurse-submodules)
+  - (cd .tmp/dolphin && mkdir -p build)
+  - (cd .tmp/dolphin && cmake -S . -B build/ -G Ninja -DCMAKE_INSTALL_PREFIX=/usr -DUSE_SYSTEM_LIBS=OFF -DENABLE_ANALYTICS=OFF -DENABLE_CLI_TOOL=OFF -DENABLE_NOGUI=OFF -DENABLE_AUTOUPDATE=OFF -DUSE_MGBA=OFF build/)
+  - (cd .tmp/dolphin && cmake --build build/ -- -j 4)
+  - (cd .tmp/dolphin && DESTDIR=$TARGET_APPDIR cmake --install build/)
+  - rm -rf .tmp
+
+AppDir:
+  path: ./AppDir
+
+  app_info:
+    id: org.dolphin-emu.dolphin-emu
+    name: dolphin-emu
+    icon: dolphin-emu
+    version: "git"
+    exec: usr/bin/dolphin-emu
+    exec_args: $@
+
+  apt:
+    arch: amd64
+    sources:
+      - sourceline: 'deb http://archive.ubuntu.com/ubuntu/ lunar main restricted universe multiverse'
+        key_url: 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xF6ECB3762474EDA9D21B7022871920D1991BC93C'
+      - sourceline: 'deb http://archive.ubuntu.com/ubuntu/ lunar-updates main restricted universe multiverse'
+    include:
+      - libasound2
+      - libavformat59
+      - libbluetooth3
+      # Required for architecture detection. (fixes "RuntimeError: Unable to determine the bundle architecture")
+      - libc-dev-bin
+      - libpulse0
+      - libqt6widgets6
+      - libspeexdsp1
+      - libswscale6
+
+  runtime:
+    path_mappings:
+      - /usr/share/dolphin-emu/:$APPDIR/usr/share/dolphin-emu/
+
+  # Exits with code 134 due to missing X.
+  # test:
+  #   # ubunt'u:
+  #   #   image: swmarc/appimage-tests:ubuntu-23.04
+  #   #   com'mand: ./AppRun --version
+  #   debian:
+  #     image: swmarc/appimage-tests:debian-stable
+  #     command: ./AppRun --version
+
+AppImage:
+  arch: x86_64
